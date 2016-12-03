@@ -15,7 +15,7 @@ exports.getEmptyPizza = function(text) {
 	pizza.crust = "";
 	pizza.sauce = "";
 	pizza.toppings = "";
-	pizza.price = "";
+	pizza.price = 0;
 
 	return pizza;
 }
