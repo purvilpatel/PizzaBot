@@ -27,6 +27,7 @@ exports.parsePizza = function(pizza, entities) {
         switch(entity.type){
         	case 'Size':
         		pizza.size = entity.entity;
+        		pizza = setSizePrice(pizza, pizza.size.toUpperCase());
         		break;
         	case 'Crust':
         		pizza.crust = entity.entity;
@@ -39,5 +40,25 @@ exports.parsePizza = function(pizza, entities) {
         		break;
         }
     }
+	return pizza;
+}
+
+// get price for size
+function setSizePrice(pizza, size) {
+	switch(size){
+		case 'LARGE':
+		case 'FAMILY':
+			pizza.price += 15;
+		break;
+
+		case 'SMALL':
+		case 'SINGLE':
+			pizza.price += 5;
+		break;
+
+		case 'MEDIUM':
+			pizza.price += 10;
+		break;
+	}
 	return pizza;
 }
