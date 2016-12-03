@@ -3,6 +3,8 @@ var builder = require('botbuilder');
 var fs = require('fs');
 // Load the http module to create an http server.
 var httpServer = require("./httpServer.js");
+// Load the lib module to support custom funcitons
+var lib = require("./lib.js");
 
 //=========================================================
 // Bot Setup
@@ -51,47 +53,14 @@ dialog.matches('Greeting', [
 
 // Add intent handlers
 dialog.matches('OrderPizza', function(session, args, next) {
-    console.log("/***********************\n\n");
-    console.log(args);
-    var entity = builder.EntityRecognizer.findEntity(args.entities, 'Size');
-    console.log(entity);
-    if (entity) {
-        // Verify its in our set of alarms.
-        session.send(JSON.stringify(entity));
-    }
-
+    var pizza = lib.getEmptyPizza();
+    var pizza = lib.parsePizza(pizza, args.entities);
+    lib.newLine();
+    lib.newLine();
+    console.log(pizza);
 });
 
 dialog.onDefault(function(session, args, next) {
     console.log(args);
     session.send(JSON.stringify(args));
 });
-
-
-/*[
-    function (session, args, next) {
-        // Resolve entities passed from LUIS.
-        var title;
-        var entity = builder.EntityRecognizer.findEntity(args.entities, 'builtin.alarm.title');
-        if (entity) {
-            // Verify its in our set of alarms.
-            title = builder.EntityRecognizer.findBestMatch(alarms, entity.entity);
-        }
-        
-        // Prompt for alarm name
-        if (!title) {
-            builder.Prompts.choice(session, 'Which alarm would you like to delete?', alarms);
-        } else {
-            next({ response: title });
-        }
-    },
-    function (session, results) {
-        // If response is null the user canceled the task
-        if (results.response) {
-            delete alarms[results.response.entity];
-            session.send("Deleted the '%s' alarm.", results.response.entity);
-        } else {
-            session.send('Ok... no problem.');
-        }
-    }
-]);*/
