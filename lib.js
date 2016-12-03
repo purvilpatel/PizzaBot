@@ -43,6 +43,25 @@ exports.parsePizza = function(pizza, entities) {
 	return pizza;
 }
 
+// polish pizza, remove unncessary charecters
+exports.polishPizza = function(pizza) {
+	if(pizza.toppings){
+		pizza.toppings = removeChar(pizza.toppings, ',');
+	}
+	if(pizza.sauce){
+		pizza.sauce = removeChar(pizza.sauce, ',');
+	}
+	return pizza;
+}
+
+function removeChar(str, char){
+	if(str.includes(char)){
+		return str.substr(0,str.lastIndexOf(char));
+		
+	}
+	return str;
+}
+
 // get price for size
 function setSizePrice(pizza, size) {
 	switch(size){

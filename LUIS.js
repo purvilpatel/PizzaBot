@@ -54,7 +54,8 @@ dialog.matches('Greeting', [
 // Add intent handlers
 dialog.matches('OrderPizza', function(session, args, next) {
     var pizza = lib.getEmptyPizza();
-    var pizza = lib.parsePizza(pizza, args.entities);
+    pizza = lib.parsePizza(pizza, args.entities);
+    pizza = lib.polishPizza(pizza);
     lib.newLine();
     lib.newLine();
     console.log(pizza);
