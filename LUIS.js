@@ -59,6 +59,7 @@ dialog.matches('OrderPizza', function(session, args, next) {
     lib.newLine();
     lib.newLine();
     console.log(pizza);
+    session.send(lib.userReadablePizzaString(pizza));
 });
 
 dialog.onDefault(function(session, args, next) {
