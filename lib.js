@@ -36,7 +36,7 @@ exports.parsePizza = function(pizza, entities) {
                 pizza.sauce = entity.entity;
                 break;
             case 'Toppings':
-                pizza.toppings += entity.entity + ",";
+                pizza.toppings += entity.entity + ", ";
                 break;
         }
     }
@@ -54,7 +54,7 @@ exports.polishPizza = function(pizza) {
     return pizza;
 }
 
-// return userreadable pizza string
+// return user readable pizza string
 exports.userReadablePizzaString = function(pizza) {
     var returnString = "You have ordered one ";
     if (pizza.size) {
@@ -65,10 +65,13 @@ exports.userReadablePizzaString = function(pizza) {
     }
     returnString += " pizza";
     if (pizza.sauce) {
-        returnString += " with " + pizza.sauce + " sauce";
+        returnString += " with " + pizza.sauce + " sauce and ";
+    }
+    else{
+    	returnString += " with ";
     }
     if (pizza.toppings) {
-        returnString += " and " + pizza.toppings + " toppings.";
+        returnString += pizza.toppings + " toppings.";
     }
     if (pizza.price) {
         returnString += " Your bill is $" + pizza.price + ".";
