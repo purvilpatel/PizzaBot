@@ -6,6 +6,9 @@ var httpServer = require("./httpServer.js");
 // Load the lib module to support custom funcitons
 var lib = require("./lib.js");
 
+// gloabl pizza object to store order
+var pizza = null;
+
 //=========================================================
 // Bot Setup
 //=========================================================
@@ -38,6 +41,7 @@ bot.dialog('/', dialog);
 
 // Add intent handlers
 dialog.matches('Greeting', [
+
     function(session) {
         builder.Prompts.text(session, "Hello, what is your name?");
     },
@@ -53,14 +57,17 @@ dialog.matches('Greeting', [
 
 // Add intent handlers
 dialog.matches('OrderPizza', function(session, args, next) {
-    var pizza = lib.getEmptyPizza();
+    // if pizza is null, create empty pizza
+    if (!pizza)
+        pizza = lib.getEmptyPizza();
     pizza = lib.parsePizza(pizza, args.entities);
     pizza = lib.polishPizza(pizza);
     lib.newLine();
-    lib.newLine();
     console.log(pizza);
     session.send(lib.userReadablePizzaString(pizza));
+    session.beginDialog('/VerifyOrder');
 });
+
 
 dialog.onDefault(function(session, args, next) {
     console.log(args);
