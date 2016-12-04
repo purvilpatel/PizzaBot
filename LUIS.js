@@ -64,8 +64,8 @@ dialog.matches('OrderPizza', function(session, args, next) {
     pizza = lib.polishPizza(pizza);
     lib.newLine();
     console.log(pizza);
-    session.send(lib.userReadablePizzaString(pizza));
-    session.beginDialog('/VerifyOrder');
+    //session.send(lib.userReadablePizzaString(pizza));
+    session.replaceDialog('/VerifyOrder');
 });
 
 bot.dialog('/VerifyOrder', [
@@ -93,9 +93,20 @@ bot.dialog('/VerifyOrder', [
             console.log("pizza.toppings : " + pizza.toppings);
             var prompt = "Do you like to add some toppings?";
             session.send(prompt);
+            // call root dialog, so that we can parse user response with LUIS
+            session.beginDialog('/');
+        }
+        else{
             // ask for user address
             session.beginDialog('/Address');
         }
+    }
+]);
+
+bot.dialog('/Address', [
+    function(session, args, next) {
+        session.send(lib.userReadablePizzaString(pizza));
+        session.send("Thank you for your order. You will recieve your delicious pizza within 25 minutes.");
     }
 ]);
 

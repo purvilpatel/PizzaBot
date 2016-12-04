@@ -38,6 +38,10 @@ exports.parsePizza = function(pizza, entities) {
             case 'Toppings':
                 pizza.toppings += entity.entity + ", ";
                 break;
+            /*case 'builtin.number':
+            	pizza.quantity = entity.entity;
+                break;
+            */
         }
     }
     return pizza;
