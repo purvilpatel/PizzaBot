@@ -51,7 +51,7 @@ dialog.matches('Greeting', [
             if (err) return console.log(err);
             console.log('Hello World > helloworld.txt');
         });
-        session.send('Hello %s!', results.response);
+        session.send('Hello %s! I am a pizza bot. I can help you place your order.\n\nPlease type menu or profile for options.', results.response);
     }
 ]);
 
@@ -67,6 +67,30 @@ dialog.matches('OrderPizza', function(session, args, next) {
     session.send(lib.userReadablePizzaString(pizza));
     session.beginDialog('/VerifyOrder');
 });
+
+bot.dialog('/VerifyOrder', [
+    
+    function(session, args, next) {
+        if (!pizza.size || pizza.size == "" || pizza.size == '') {
+            console.log("pizza.size : " + pizza.size);
+            var prompt = "Do you want small, medium or large pizza?";
+            session.send(prompt);
+        } else if (!pizza.crust || pizza.crust == "" || pizza.crust == '') {
+            console.log("pizza.crust : " + pizza.crust);
+            var prompt = "Would you like thin crust or hand tossed pizza?";
+            session.send(prompt);
+        } else if (!pizza.sauce || pizza.sauce == "" || pizza.sauce == '') {
+            console.log("pizza.sauce : " + pizza.sauce);
+            var prompt = "What sauce would you like?";
+            session.send(prompt);
+        } else if (!pizza.toppings || pizza.toppings == "" || pizza.toppings == '') {
+            console.log("pizza.toppings : " + pizza.toppings);
+            var prompt = "Do you like to add some toppings";
+            session.send(prompt);
+            session.beginDialog('/Address');
+        }
+    }
+]);
 
 
 dialog.onDefault(function(session, args, next) {
