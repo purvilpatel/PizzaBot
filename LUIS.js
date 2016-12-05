@@ -49,12 +49,12 @@ dialog.matches('Greeting', [
 
     function(session) {
         // if user is redirected from profile menu
-        if(isFromProfile){
+        if (isFromProfile) {
             builder.Prompts.text(session, "Ok " + session.userData.userName + ". Enter your new user name.");
             session.userData.userName = "";
         }
         // user name is not set
-        else if(!session.userData.userName || session.userData.userName == "" || session.userData.userName == undefined) {
+        else if (!session.userData.userName || session.userData.userName == "" || session.userData.userName == undefined) {
             // user is visiting first time, ask user his name
             builder.Prompts.text(session, "Hello, what is your name?");
         } else {
@@ -75,21 +75,20 @@ dialog.matches('Greeting', [
 
 // welcome the user and introduce the bot
 bot.dialog('/Welcome', [
+
     function(session) {
         // welcome user and introduce bot
         var prompt = "Hello " + session.userData.userName + ", I am a pizza bot. I can help you place your order.\n\nPlease type menu or profile for options.";
         builder.Prompts.text(session, prompt);
     },
     function(session, results) {
-        if (results.response.toUpperCase() == "MENU"){
+        if (results.response.toUpperCase() == "MENU") {
             session.beginDialog('/Menu');
-        }
-        else if (results.response.toUpperCase() == "PROFILE"){
+        } else if (results.response.toUpperCase() == "PROFILE") {
             // set flag, that user is redirected from profile menu
             isFromProfile = true;
             session.beginDialog('/');
-        }
-        else{
+        } else {
             session.endDialog('Hey I didn\'t catch that, Please type menu or profile for options.');
         }
     }
@@ -97,8 +96,9 @@ bot.dialog('/Welcome', [
 
 // Display menu to user
 bot.dialog('/Menu', [
-    function(session){
-        session.send("Toppings: Beef, Bacon, Cheese, Olives, Chicken, Jalapeno, Mushroom, Onions, Pepperoni, Peppers, Pineapple, Tomatoes. \n\n Sauce: Alfredo, Marinara, Traditional \n\n Crust: Thin, Pan, Regular\n\nNow, build your own pizza.");
+
+    function(session) {
+        session.send("Toppings: Beef, Bacon, Cheese, Olives, Chicken, Jalapeno, Mushroom, Onions, Pepperoni, Peppers, Pineapple, Tomatoes.\n\nSauce: Alfredo, Marinara, Traditional.\n\nCrust: Thin, Pan, Regular.\n\nNow, build your own pizza.");
         session.replaceDialog('/');
     }
 ]);
@@ -118,7 +118,7 @@ dialog.matches('OrderPizza', function(session, args, next) {
 
 // verify the order if something is missing
 bot.dialog('/VerifyOrder', [
-    
+
     function(session, args, next) {
         if (!pizza.size || pizza.size == "" || pizza.size == '') {
             console.log("pizza.size : " + pizza.size);
@@ -144,8 +144,7 @@ bot.dialog('/VerifyOrder', [
             session.send(prompt);
             // call root dialog, so that we can parse user response with LUIS
             session.beginDialog('/');
-        }
-        else{
+        } else {
             // Everything is OKAY.
             // Phewwww....
             // ask for user address
@@ -156,9 +155,10 @@ bot.dialog('/VerifyOrder', [
 
 // user address dialog
 bot.dialog('/Address', [
-    function(session){
-        builder.Prompts.text(session, "Where do you want your pizza to be delivered?");
-    },  
+
+    function(session) {
+        builder.Prompts.text(session, "Where should we deliever your pizza?");
+    },
     function(session, results) {
         session.userData.userAddress = results.response;
         // ask for user confirmation
@@ -169,35 +169,36 @@ bot.dialog('/Address', [
 
 // user confirmation dialog
 bot.dialog('/Confirmation', [
-    function(session){
-        if (isInConfirmationDialog == false){
+
+    function(session) {
+        if (isInConfirmationDialog == false) {
+            session.send(lib.userReadablePizzaString(pizza) + "\nYour pizza will be delievered at " + session.userData.userAddress + ".");
             builder.Prompts.text(session, "Do you want to place your order?");
-        }
-        else if(isInConfirmationDialog){       
-            builder.Prompts.text(session, "Sorry, I didn\'t catch that, Please respond in yes or no");   
+        } else if (isInConfirmationDialog) {
+            builder.Prompts.text(session, "Sorry, I didn\'t catch that, Please respond in yes or no");
             isInConfirmationDialog = false;
         }
     },
     function(session, results) {
         // user agreed
-        if(results.response.toUpperCase() == "YES" || results.response.toUpperCase() == "Y"){
-            session.send(lib.userReadablePizzaString(pizza));
+        if (results.response.toUpperCase() == "YES" || results.response.toUpperCase() == "Y") {
             session.send("Thank you for your order. You will recieve your delicious pizza within 25 minutes.");
         }
         // user cancelled order
-        else if(results.response.toUpperCase() == "NO" || results.response.toUpperCase() == "N")    {
-            session.beginDialog('/CancelOrder');
+        else if (results.response.toUpperCase() == "NO" || results.response.toUpperCase() == "N") {
+            session.replaceDialog('/CancelOrder');
         }
         // user enterd something that we don't understand
-        else{
+        else {
             isInConfirmationDialog = true;
-            session.beginDialog('/Confirmation');
+            session.replaceDialog('/Confirmation');
         }
     }
 ]);
 
 bot.dialog('/CancelOrder', [
-    function(session){
+
+    function(session) {
         pizza = null;
         isFromProfile = false;
         isInConfirmationDialog = false;
