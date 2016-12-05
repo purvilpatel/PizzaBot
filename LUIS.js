@@ -12,7 +12,11 @@ var pizza = null;
 // flag to identify redirection for profile menu option
 var isFromProfile = false;
 
+// flag to manage confirmation dialog flow
 var isInConfirmationDialog = false;
+
+// flag to manage welsome dialog flow
+var isInWelcomeDialog = false;
 
 //=========================================================
 // Bot Setup
@@ -77,9 +81,15 @@ dialog.matches('Greeting', [
 bot.dialog('/Welcome', [
 
     function(session) {
-        // welcome user and introduce bot
-        var prompt = "Hello " + session.userData.userName + ", I am a pizza bot. I can help you place your order.\n\nPlease type menu or profile for options.";
-        builder.Prompts.text(session, prompt);
+        if (isInWelcomeDialog == false) {
+            // welcome user and introduce bot
+            var prompt = "Hello " + session.userData.userName + ", I am a pizza bot. I can help you place your order.\n\nPlease type menu or profile for options.";
+            builder.Prompts.text(session, prompt);
+        } else if (isInWelcomeDialog) {
+            builder.Prompts.text(session, "Hey I didn\'t catch that, Please type menu or profile for options.");
+            isInWelcomeDialog = false;
+        }
+
     },
     function(session, results) {
         if (results.response.toUpperCase() == "MENU") {
@@ -89,7 +99,8 @@ bot.dialog('/Welcome', [
             isFromProfile = true;
             session.beginDialog('/');
         } else {
-            session.endDialog('Hey I didn\'t catch that, Please type menu or profile for options.');
+            isInWelcomeDialog = true;
+            session.replaceDialog("/Welcome");
         }
     }
 ]);
@@ -202,6 +213,7 @@ bot.dialog('/CancelOrder', [
         pizza = null;
         isFromProfile = false;
         isInConfirmationDialog = false;
+        isInWelcomeDialog = false;
         // return to root
         session.replaceDialog("/");
     }
