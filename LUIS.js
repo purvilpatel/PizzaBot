@@ -54,7 +54,7 @@ dialog.matches('Greeting', [
             session.userData.userName = "";
         }
         // user name is not set
-        else if(!session.userData.userName && session.userData.userName == "" && session.userData.userName == undefined) {
+        else if(!session.userData.userName || session.userData.userName == "" || session.userData.userName == undefined) {
             // user is visiting first time, ask user his name
             builder.Prompts.text(session, "Hello, what is your name?");
         } else {
